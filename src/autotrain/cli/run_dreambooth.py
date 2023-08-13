@@ -402,18 +402,6 @@ class RunAutoTrainDreamboothCommand(BaseAutoTrainCommand):
                 "required": False,
                 "action": "store_true",
             },
-            {
-                "arg": "--num_processes",
-                "help": "Number of parallel processes",
-                "required": False,
-                "type": int,
-            },
-            {
-                "arg": "--use_distributed",
-                "help": "Use in multi GPU",
-                "required": False,
-                "action": "store_true",
-            },
         ]
 
         run_dreambooth_parser = parser.add_parser("dreambooth", description="✨ Run AutoTrain DreamBooth Training")
@@ -456,7 +444,6 @@ class RunAutoTrainDreamboothCommand(BaseAutoTrainCommand):
             "push_to_hub",
             "logging",
             "prior_preservation",
-            "use_distributed",
         ]
 
         for arg_name in store_true_arg_names:

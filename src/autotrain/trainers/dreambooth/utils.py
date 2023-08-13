@@ -260,7 +260,10 @@ def load_model_components(config, device, weight_dtype):
         )
 
     try:
-        vae = AutoencoderKL.from_pretrained(config.model, subfolder="vae", revision=config.revision)
+        if config.vae:
+            vae = AutoencoderKL.from_pretrained(config.vae, torch_dtype=torch.float16)
+        else:
+            vae = AutoencoderKL.from_pretrained(config.model, subfolder="vae", revision=config.revision)
     except OSError:
         logger.warning("No VAE found. Training without VAE.")
         vae = None

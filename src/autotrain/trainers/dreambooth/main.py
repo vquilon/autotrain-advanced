@@ -48,6 +48,8 @@ def train(config):
         mixed_precision=mixed_precision,
         log_with="tensorboard" if config.logging else None,
         project_config=accelerator_project_config,
+        num_processes=config.num_processes,
+        use_distributed=config.use_distributed
     )
 
     if config.train_text_encoder and config.gradient_accumulation > 1 and accelerator.num_processes > 1:

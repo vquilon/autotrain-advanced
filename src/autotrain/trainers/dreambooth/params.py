@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 class DreamBoothTrainingParams(BaseModel):
     model: str = Field(None, title="Model name")
     revision: str = Field(None, title="Revision")
+    vae: str = Field(None, title="VAE")
     tokenizer: str = Field(None, title="Tokenizer, if different from model")
     image_path: str = Field(None, title="Image path")
     class_image_path: str = Field(None, title="Class image path")

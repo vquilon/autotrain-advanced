@@ -6,7 +6,7 @@ import torch
 import torch.nn.functional as F
 import transformers
 from accelerate import Accelerator
-from accelerate.utils import DistributedType, InitProcessGroupKwargs
+from accelerate.utils import DistributedType, KwargsHandler
 from accelerate.utils import ProjectConfiguration, set_seed
 from diffusers import StableDiffusionXLPipeline
 from diffusers.loaders import LoraLoaderMixin, text_encoder_lora_state_dict
@@ -44,8 +44,14 @@ def train(config):
     else:
         mixed_precision = "no"
 
+
+    class CustomKwargs(KwargsHandler):
+        def __init__(**kwargs):
+            for key_arg, val_arg in kwargs.items():
+                setattribute(self, key_arg, val_arg)
+    
     kwargs_handlers = [
-        InitProcessGroupKwargs(
+        CustomKwargs(
             num_processes=config.num_processes,
             distributed_type=DistributedType.NO if not config.use_distributed else DistributedType.MULTI_GPU
         )

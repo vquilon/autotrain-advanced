@@ -73,6 +73,3 @@ class DreamBoothTrainingParams(BaseModel):
 
     logging: bool = Field(False, title="Logging using tensorboard")
     
-    num_processes: int = Field(1, title="Number of processe in parallel")
-    use_distributed: bool = Field(False, title="Use in distributted mode")
-    

@@ -6,6 +6,7 @@ import torch
 import torch.nn.functional as F
 import transformers
 from accelerate import Accelerator
+from accelerate.utils import DistributedType, InitProcessGroupKwargs
 from accelerate.utils import ProjectConfiguration, set_seed
 from diffusers import StableDiffusionXLPipeline
 from diffusers.loaders import LoraLoaderMixin, text_encoder_lora_state_dict
@@ -43,15 +44,21 @@ def train(config):
     else:
         mixed_precision = "no"
 
+    kwargs_handlers = [
+        InitProcessGroupKwargs(
+            num_processes=config.num_processes,
+            distributed_type=DistributedType.NO if not config.use_distributed else DistributedType.MULTI_GPU
+        )
+    ]
+    
     accelerator = Accelerator(
         gradient_accumulation_steps=config.gradient_accumulation,
         mixed_precision=mixed_precision,
         log_with="tensorboard" if config.logging else None,
         project_config=accelerator_project_config,
-        num_processes=config.num_processes,
-        use_distributed=config.use_distributed
+        kwargs_handlers=kwargs_handlers
     )
-
+    
     if config.train_text_encoder and config.gradient_accumulation > 1 and accelerator.num_processes > 1:
         raise ValueError(
             "Gradient accumulation is not supported when training the text encoder in distributed training. "

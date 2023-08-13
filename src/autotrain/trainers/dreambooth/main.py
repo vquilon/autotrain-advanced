@@ -43,19 +43,6 @@ def train(config):
         mixed_precision = "bf16"
     else:
         mixed_precision = "no"
-
-
-    class CustomKwargs(KwargsHandler):
-        def __init__(**kwargs):
-            for key_arg, val_arg in kwargs.items():
-                setattribute(self, key_arg, val_arg)
-    
-    kwargs_handlers = [
-        CustomKwargs(
-            num_processes=config.num_processes,
-            distributed_type=DistributedType.NO if not config.use_distributed else DistributedType.MULTI_GPU
-        )
-    ]
     
     accelerator = Accelerator(
         gradient_accumulation_steps=config.gradient_accumulation,
@@ -64,6 +51,8 @@ def train(config):
         project_config=accelerator_project_config,
         kwargs_handlers=kwargs_handlers
     )
+    logger.info(f"Accelerator num_processes", accelerator.state.num_processes)
+    logger.info(f"Accelerator distributed type", accelerator.state.distributed_type)
     
     if config.train_text_encoder and config.gradient_accumulation > 1 and accelerator.num_processes > 1:
         raise ValueError(

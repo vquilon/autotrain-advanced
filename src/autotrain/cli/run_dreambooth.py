@@ -51,6 +51,12 @@ class RunAutoTrainDreamboothCommand(BaseAutoTrainCommand):
                 "type": str,
             },
             {
+                "arg": "--vae",
+                "help": "VAE to use for training (pretrained_vae_model_name_or_path)",
+                "required": False,
+                "type": str,
+            },
+            {
                 "arg": "--image-path",
                 "help": "Path to the images",
                 "required": True,
